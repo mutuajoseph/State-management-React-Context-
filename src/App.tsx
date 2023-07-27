@@ -4,6 +4,7 @@ import { fetchUsers } from './services';
 import { UserContext } from './store/userContext';
 import './style.css';
 import _ from 'lodash';
+import { AuthContext } from './store/authContext';
 
 // TUESDAY
 // -> useEffect Hook
@@ -21,6 +22,8 @@ import _ from 'lodash';
 
 export default function App() {
   const { user, users, setUsers } = React.useContext(UserContext);
+  const { isAuthenticated, login, logout, isLoading } =
+    React.useContext(AuthContext);
 
   React.useEffect(() => {
     // execute the get users functions
@@ -39,13 +42,36 @@ export default function App() {
 
   return (
     <div>
-      <h1>Users Table</h1>
-      <UserList />
+      {isAuthenticated && (
+        <button onClick={() => logout()}>
+          {isLoading ? <>Loading...</> : <>Logout</>}
+        </button>
+      )}
+      {!isAuthenticated && (
+        <button
+          onClick={() =>
+            login({ email: 'johndoe@gmail.com', password: '12345678' })
+          }
+        >
+          {isLoading ? <>Loading...</> : <>Login</>}
+        </button>
+      )}
 
-      {/* display user Details */}
-      <br />
-      <br />
-      {!_.isEmpty(user) && <div>{JSON.stringify(user)}</div>}
+      {isAuthenticated ? (
+        <div>
+          <h1>Users Table</h1>
+          <UserList />
+
+          {/* display user Details */}
+          <br />
+          <br />
+          {!_.isEmpty(user) && <div>{JSON.stringify(user)}</div>}
+        </div>
+      ) : (
+        <div>You are not logged in</div>
+      )}
     </div>
   );
 }
+
+// conditionally render the table is the use is logged in
