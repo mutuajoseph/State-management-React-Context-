@@ -22,7 +22,7 @@ import { AuthContext } from './store/authContext';
 
 export default function App() {
   const { user, users, setUsers } = React.useContext(UserContext);
-  const { isAuthenticated, login, logout, isLoading } =
+  const { isAuthenticated, login, logout, isLoading, error } =
     React.useContext(AuthContext);
 
   React.useEffect(() => {
@@ -42,6 +42,8 @@ export default function App() {
 
   return (
     <div>
+      {!_.isEmpty(error) && <div>{JSON.stringify(error)}</div>}
+
       {isAuthenticated && (
         <button onClick={() => logout()}>
           {isLoading ? <>Loading...</> : <>Logout</>}
